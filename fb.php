@@ -23,12 +23,8 @@ if ($user_id) {
     // We have a user ID, so probably a logged in user.
     // If not, we'll get an exception, which we handle below.
     try {
-        $ret_obj = $facebook->api('/me/feed', 'POST',
-            array(
-                'link' => 'www.example.com',
-                'message' => 'Posting with the PHP SDK!'
-            ));
-        echo '<pre>Post ID: ' . $ret_obj['id'] . '</pre>';
+        $ret_obj = $facebook->api('/me/feed');
+        echo '<pre>Post data: ' . json_encode($ret_obj) . '</pre>';
 
         // Give the user a logout link
         echo '<br /><a href="' . $facebook->getLogoutUrl() . '">logout</a>';
