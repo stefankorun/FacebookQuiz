@@ -70,6 +70,7 @@ body header h1 a:hover {
     margin-right: 3px;
 }
 .quiz_container .submit_button {
+    position: relative;
     background: #97CC8D;
     margin: 5px 31px;
     padding: 10px;
@@ -79,4 +80,9 @@ body header h1 a:hover {
     font-size: 1.5em;
     text-align: center;
     cursor: pointer;
+}
+.quiz_container .submit_button:active {
+    box-shadow: none;
+    top: 1px;
+    left: 1px;
 }

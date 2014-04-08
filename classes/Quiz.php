@@ -6,6 +6,8 @@
  * Time: 2:14 PM
  */
 
+require_once("Question.php");
+
 
 class Quiz {
     private $questions;

@@ -1,7 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: korun
- * Date: 4/8/14
- * Time: 5:03 PM
- */ 
+
+require_once("classes/Quiz.php");
+
+
+$quiz = new Quiz();
+
+echo $quiz->debug();

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: korun
- * Date: 4/8/14
- * Time: 4:56 PM
- */
 
 class Answer {
     private $id;
@@ -14,7 +8,7 @@ class Answer {
 
     public function __construct(){
         $this->id = '-1';
-        $this->$text = 'An answer';
-        $this->$is_correct = 'false';
+        $this->text = 'An answer';
+        $this->is_correct = 'false';
     }
 } 
