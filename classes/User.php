@@ -40,7 +40,7 @@ class User{
 		if(sizeof($result) == 0){//korisnikot ne e vnesen vo bazata
 			return NULL;
 		}
-		return $result[0];
+		return $result;
 	}
 	
 	//populnuvanje info za user

@@ -6,43 +6,35 @@ class DBManager
 	private $username = 'root';
 	private $pass = '';
 	private $database = 'usersdb';
+	private $mysqli;
+	private $port;
 	
 	function connect()
 	{
-		$link=mysql_connect($this->host,
-				$this->username, $this->pass) or die();
-		return $link;
-	}
-	
-	function selectDB($link)
-	{
-		mysql_select_db($this->database,$link);
+		$this->mysqli= new mysqli($this->host, $this->username, $this->pass, $this->database) or die();
+		if ($this->mysqli->connect_errno) {
+			echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+		}
 	}
 	
 	function CloseConnection()
 	{
-		mysql_close();
+		$this->mysqli->close();
 	}
 	
 	function __construct()
 	{
-		$link = $this->connect();
-		$this->selectDB($link);
+		$this->connect();
 	}
 	
 	function getUserByFbid($fbid){
-		$res = array();
-		$query = mysql_query("SELECT * FROM user WHERE fbid=".$fbid."");
-		while($row=mysql_fetch_assoc($query))
-		{
-			array_push($res,$row);
-			
-		}
+		$query = $this->mysqli->query("SELECT * FROM user WHERE fbid=".$fbid."");
+		$res = $query->fetch_assoc();
 		return $res;
 	}
 	
 	function addUser($fbid, $name, $email){
-		$query = mysql_query("INSERT INTO user(fbid, name, email, quiz, points) VALUES(".$fbid.", '".$name."', '".$email."', 0, 0)");
+		$query = $this->mysqli->query("INSERT INTO user(fbid, name, email, quiz, points) VALUES(".$fbid.", '".$name."', '".$email."', 0, 0)");
 		return $query;
 	}
 }
