@@ -49,6 +49,7 @@ body header h1 a:hover {
     background: rgba(128, 128, 128, 0.15);
     padding: 10px 10px 10px 30px;
     margin: 2px;
+    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);
 
     font-weight: 300;
     font-size: 1.4em;
@@ -71,9 +72,11 @@ body header h1 a:hover {
 .quiz_container .submit_button {
     background: #97CC8D;
     margin: 5px 31px;
-    padding: 5px;
+    padding: 10px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
 
     font-weight: 300;
     font-size: 1.5em;
     text-align: center;
+    cursor: pointer;
 }
