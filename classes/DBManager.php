@@ -5,7 +5,7 @@ class DBManager
 	private $host = '127.0.0.1';
 	private $username = 'root';
 	private $pass = '';
-	private $database = 'usersdb';
+	private $database = 'kliz_autodesk';
 	private $mysqli;
 	private $port;
 	
@@ -28,13 +28,83 @@ class DBManager
 	}
 	
 	function getUserByFbid($fbid){
-		$query = $this->mysqli->query("SELECT * FROM user WHERE fbid=".$fbid."");
+		$query = $this->mysqli->query("SELECT * FROM user WHERE fb_id=".$fbid."");
 		$res = $query->fetch_assoc();
-		return $res;
+		
+		if(sizeof($res) > 0)
+			return $res;
+		else
+			return TRUE;//greska
 	}
 	
-	function addUser($fbid, $name, $email){
-		$query = $this->mysqli->query("INSERT INTO user(fbid, name, email, quiz, points) VALUES(".$fbid.", '".$name."', '".$email."', 0, 0)");
-		return $query;
+	function addUser($fbid, $name, $email, $tel){
+		$query = $this->mysqli->query("INSERT INTO user(fb_id, name, email, tel, questionsLeft, points) VALUES(".$fbid.", '".$name."', '".$email."', '".$tel."', 10, 0)");
+		
+		if($query)
+			return FALSE;
+		else 
+			return TRUE;
+	}
+	
+	function updateQuestionsLeft($fbid, $ql){
+		$query = $this->mysqli->query("UPDATE user SET questionsLeft=".$ql." WHERE fb_id=".$fbid."");
+		
+		if($query)
+			return FALSE;
+		else 
+			return TRUE;//greska
+	}
+	
+	function checkAnswer($qid, $answer){
+		$queryQuestionPoints = $this->mysqli->query("SELECT answer FROM prasanja WHERE id=".$qid."");
+		$res = $queryQuestionPoints->fetch_assoc();
+		
+		if(sizeof($res)){
+			if($res['answer'] == $answer){//ako e tocen odgovorot 10 poeni
+				return 10;
+			}
+			else{// ako ne 0
+				return 0;
+			}
+		}
+		else{
+			return TRUE;//greska...
+		}
+	}
+	
+	function getUserPoints($fbid){
+		$queryQuestionPoints = $this->mysqli->query("SELECT * FROM user WHERE fb_id=".$fbid."");
+		$res = $queryQuestionPoints->fetch_assoc();
+		$points = $res['points'];
+		
+		if(sizeof($res))
+			return $points;
+		else
+			return TRUE;//greska
+	}
+	
+	function newUserAnswer($fbid, $qid, $points){
+		$query = $this->mysqli->query("INSERT INTO userquestion(user_id, questionId, points) VALUES(".$fbid.", ".$qid.", ".$points.")");
+		
+		if($query)
+			return FALSE;
+		else
+			return TRUE;
+	}
+	
+	function updatePoints($fbid, $qid, $questionsLeft, $answer){
+		$resAnswer = $this->checkAnswer($qid, $answer);
+		if($resAnswer !== TRUE){
+			$upoints = $this->getUserPoints($fbid);
+			$newpoints = $resAnswer + $upoints;
+			$query = $this->mysqli->query("UPDATE user SET questionsLeft=".$questionsLeft.", points=".$newpoints." WHERE fb_id=".$fbid."");
+			$this->newUserAnswer($fbid, $qid, $resAnswer);
+			
+			if($query)
+				return FALSE;
+			else 
+				return TRUE;//greska
+		}
+		return TRUE;//greska
 	}
 }
