@@ -20,6 +20,6 @@ class Quiz {
     }
 
     public function showQizz() {
-        return print_r($this);
+        $this->questions[0]->answers[0]->generateHtml();
     }
 } 
