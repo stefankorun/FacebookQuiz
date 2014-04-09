@@ -17,5 +17,5 @@ Answers = {
                 form_html.submit();
             });
         })
-    }
+    }()
 };
