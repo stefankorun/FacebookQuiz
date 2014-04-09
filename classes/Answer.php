@@ -8,20 +8,21 @@
 include_once("external/simple_html_dom.php");
 
 class Answer {
-    private $id;
-
     public $text;
-    public $is_correct;
 
-    public function __construct(){
-        $this->id = '-1';
-        $this->text = 'An answer';
-        $this->is_correct = 'false';
+    public function __construct($text){
+        $this->text = $text;
     }
 
-    public function generateHtml() {
+    public function render($html_location) {
         $html = new simple_html_dom();
-        $html->load_file('design/index.html');
-        echo $html->find(".col-sm-6", 0);
+        $html->load_file($html_location);
+        $answer_div = $html->find(".php_answerhtml");
+
+
+        $text = $answer_div->find(".php_answertext");
+        $text->innertext = $this->text;
+
+        return $answer_div;
     }
 }
