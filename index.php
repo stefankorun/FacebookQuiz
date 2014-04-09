@@ -64,7 +64,7 @@
 							}
 						}else{
 							$u->setUserInfo($userinfo);
-							$u->getNextQuestion();
+							$u->getNextQuestion($fbid);
 							if(isset($_POST['questionId']) && isset($_POST['answer'])){
 								$u->validateAnswer($fbid,$_POST['questionId'],$_POST['answer']);
 								$u->newAnswer($_POST['questionId'], $_POST['answer']);

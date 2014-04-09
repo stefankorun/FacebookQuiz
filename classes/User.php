@@ -5,7 +5,7 @@ require_once 'Question.php';
 class User{
 	private $info = array();//info za user
 	private $permission; //0 - ne smejt da go prajt kvizot, 1 - smejt
-	private static $max_questions = 10;
+	private static $max_questions = 5;
 	
 	function __construct(/*$fbid, $name, $email, $tel*/){
 		/*$db_user_info = $this->getUserInfo($fbid);
@@ -72,7 +72,7 @@ class User{
 					"name" => $name,
 					"email" => $email,
 					"tel" => $tel,
-					"questionsLeft" => 10,
+					"questionsLeft" => 5,
 					"points" => 0
 			));
 			
@@ -116,13 +116,13 @@ class User{
 		
 	}
 	
-	public function getNextQuestion(){
+	public function getNextQuestion($fbid){
 		$db = new DBManager();
 		$question=null;
-		$result = $db->getUnfinishedQuestion('124324');
+		$result = $db->getUnfinishedQuestion($fbid);
 		if($result==false){
 		
-			$question=$db->getRandQuestion('124324');
+			$question=$db->getRandQuestion($fbid);
 		}
 		else $question=$result;
 		
