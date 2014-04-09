@@ -1,8 +1,8 @@
 <?php
 
-require_once("classes/User.php");
+require_once("classes/Quiz.php");
 
-$u=new User();
-$u->getNextQuestion();
-$u->validateAnswer('23432',1,3);
 
+$quiz = new Quiz();
+
+echo $quiz->showQizz();

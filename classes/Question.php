@@ -32,7 +32,7 @@ class Question {
 
         $qa_div->find(".php_question", 0)->innertext = $this->text;
 
-        $answers_html = "";
+        $answers_html = "<div class='js_question_id> {$this->id} </div>} </div>";
         foreach($this->answers as $a) {
             $answers_html .= $a->render($html_location);
         }

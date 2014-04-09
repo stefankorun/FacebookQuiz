@@ -10,7 +10,7 @@ include_once("external/simple_html_dom.php");
 class Answer {
     public $text;
 
-    public function __construct($text){
+    public function __construct($question_id, $text){
         $this->text = $text;
     }
 
