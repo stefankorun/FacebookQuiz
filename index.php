@@ -58,7 +58,14 @@
 				      	$u=new User();
 						$userinfo=$u->getUserInfo($fbid);
 						if($userinfo==NULL){
-							
+							if(isset($_POST['login_form'])){
+								if(isset($_POST['email']) && isset($_POST['tel'])){
+									$u->addUser($fbid, $name, $_POST['email'], $_POST['tel']);
+								}
+							}
+							else{
+								$u->renderUserInfoForm("design/userinfoform.html");
+							}
 						}else{
 							$u->setUserInfo($userinfo);
 							$u->getNextQuestion();
