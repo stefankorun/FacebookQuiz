@@ -28,7 +28,7 @@ class Question {
         $html = new simple_html_dom();
         $html->load_file($html_location);
 
-        $qa_div = $html->find(".php_qacontainer", 0);
+        $qa_div = $html->find(".php_qa_container", 0);
 
         $qa_div->find(".php_question", 0)->innertext = $this->text;
 
