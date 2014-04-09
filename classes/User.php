@@ -1,5 +1,6 @@
 <?php
 require_once 'DBManager.php';
+require_once 'Question.php';
 
 class User{
 	private $info = array();//info za user
@@ -116,9 +117,24 @@ class User{
 	}
 	
 	public function getNextQuestion(){
+		$db = new DBManager();
+		$question=null;
+		$result = $db->getUnfinishedQuestion('124324');
+		if($result==false){
 		
+			$question=$db->getRandQuestion('124324');
+		}
+		else $question=$result;
+		
+		$db->CloseConnection();
+		$q=new Question($question);
+		echo $q->render('design/index.html');
 	}
 	
+	public function validateAnswer($fbid,$questionId,$answer){
+		$db=new DBManager();
+		$db->validateAnswer($questionId,$answer,$fbid);
+	}
 	
 }//end class User
 

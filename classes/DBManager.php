@@ -5,7 +5,7 @@ class DBManager
 	private $host = '127.0.0.1';
 	private $username = 'root';
 	private $pass = '';
-	private $database = 'kviz_autodesk';
+	private $database = 'kliz_autodesk';
 	private $mysqli;
 	private $port;
 	
@@ -16,6 +16,7 @@ class DBManager
 			echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 			return FALSE;
 		}
+		$this->mysqli->set_charset("utf8");
 		return TRUE;
 	}
 	
@@ -137,7 +138,28 @@ class DBManager
 	}
 	
 	function getRandQuestion($fbid){
-		$randQuestion=$this->mysqli->query('select * from prasanja p inner join userquestion uq on p.id!=uq.questionId where uq.user_id='.$fbid.' order by rand() limit 1');
+		
+		$randQuestion=$this->mysqli->query('select * from questions p  where p.id NOT IN (SELECT uq.questionId FROM  userquestion uq where uq.user_id='.$fbid.') order by rand() limit 1');
 		return $randQuestion->fetch_assoc();
+	}
+	
+	function getUnfinishedQuestion($fbid){
+		$unfinishedQuestion=$this->mysqli->query('select * from userquestion uq inner join questions p on p.id=uq.questionId where uq.user_id='.$fbid.' and points=-1 limit 1');
+		if($unfinishedQuestion->num_rows>0){
+			return $unfinishedQuestion->fetch_assoc();
+		}
+		else return false;
+		
+		
+	}
+	
+	function validateAnswer($questionId,$answer,$fbid){
+		$correctAnswer=$this->mysqli->query('select * from questions where id='.$questionId.' and correct='.$answer.' limit 1');
+		if($correctAnswer->num_rows>0){
+			$this->newUserAnswer($fbid,$questionId,10);
+		}
+		else{
+			$this->newUserAnswer($fbid,$questionId,0);
+		}
 	}
 }
