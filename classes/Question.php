@@ -25,11 +25,19 @@ class Question {
     }
 
     public function render($html_location) {
-        $html = "";
+        $html = new simple_html_dom();
+        $html->load_file($html_location);
 
+        $qa_div = $html->find(".php_qacontainer", 0);
+
+        $qa_div->find(".php_question", 0)->innertext = $this->text;
+
+        $answers_html = "";
         foreach($this->answers as $a) {
-            $html .= $a->render($html_location);
+            $answers_html .= $a->render($html_location);
         }
+        $qa_div->find(".php_answers_container", 0)->innertext = $answers_html;
+
         return $html;
     }
 }
