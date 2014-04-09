@@ -24,4 +24,12 @@ class Question {
         return $answers;
     }
 
+    public function render($html_location) {
+        $html = "";
+
+        foreach($this->answers as $a) {
+            $html .= $a->render($html_location);
+        }
+        return $html;
+    }
 }
