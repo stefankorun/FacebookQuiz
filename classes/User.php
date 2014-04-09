@@ -115,6 +115,9 @@ class User{
 		
 	}
 	
+	public function getNextQuestion(){
+		
+	}
 	
 	
 }//end class User

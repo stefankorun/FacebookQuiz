@@ -5,7 +5,7 @@ class DBManager
 	private $host = '127.0.0.1';
 	private $username = 'root';
 	private $pass = '';
-	private $database = 'kliz_autodesk';
+	private $database = 'kviz_autodesk';
 	private $mysqli;
 	private $port;
 	
@@ -134,5 +134,10 @@ class DBManager
 			}
 		}
 		return FALSE;//greska
+	}
+	
+	function getRandQuestion($fbid){
+		$randQuestion=$this->mysqli->query('select * from prasanja p inner join userquestion uq on p.id!=uq.questionId where uq.user_id='.$fbid.' order by rand() limit 1');
+		return $randQuestion->fetch_assoc();
 	}
 }
