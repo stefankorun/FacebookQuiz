@@ -65,8 +65,14 @@
 						}else{
 							$u->setUserInfo($userinfo);
 							$u->getNextQuestion();
-							if(isset($_POST['questionId']) && isset($_POST['answer']));
-							$u->validateAnswer('23432',1,3);
+							if(isset($_POST['questionId']) && isset($_POST['answer'])){
+								$u->validateAnswer($fbid,$_POST['questionId'],$_POST['answer']);
+								$u->newAnswer($_POST['questionId'], $_POST['answer']);
+								if($u->getPermission() == 0){
+									$usr = $u->getUserInfo($fbid);
+									echo "Poeni: " . $usr['points'];
+								}
+							}
 						}
 						
 				        
