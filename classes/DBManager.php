@@ -14,7 +14,9 @@ class DBManager
 		$this->mysqli= new mysqli($this->host, $this->username, $this->pass, $this->database) or die();
 		if ($this->mysqli->connect_errno) {
 			echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+			return FALSE;
 		}
+		return TRUE;
 	}
 	
 	function CloseConnection()
@@ -34,25 +36,25 @@ class DBManager
 		if(sizeof($res) > 0)
 			return $res;
 		else
-			return TRUE;//greska
+			return FALSE;//greska
 	}
 	
 	function addUser($fbid, $name, $email, $tel){
 		$query = $this->mysqli->query("INSERT INTO user(fb_id, name, email, tel, questionsLeft, points) VALUES(".$fbid.", '".$name."', '".$email."', '".$tel."', 10, 0)");
 		
 		if($query)
-			return FALSE;
-		else 
 			return TRUE;
+		else 
+			return FALSE;
 	}
 	
 	function updateQuestionsLeft($fbid, $ql){
 		$query = $this->mysqli->query("UPDATE user SET questionsLeft=".$ql." WHERE fb_id=".$fbid."");
 		
 		if($query)
-			return FALSE;
+			return TRUE;
 		else 
-			return TRUE;//greska
+			return FALSE;//greska
 	}
 	
 	function checkAnswer($qid, $answer){
@@ -68,7 +70,7 @@ class DBManager
 			}
 		}
 		else{
-			return TRUE;//greska...
+			return FALSE;//greska...
 		}
 	}
 	
@@ -80,31 +82,31 @@ class DBManager
 		if(sizeof($res))
 			return $points;
 		else
-			return TRUE;//greska
+			return FALSE;//greska
 	}
 	
 	function newUserAnswer($fbid, $qid, $points){
 		$query = $this->mysqli->query("INSERT INTO userquestion(user_id, questionId, points) VALUES(".$fbid.", ".$qid.", ".$points.")");
 		
 		if($query)
-			return FALSE;
-		else
 			return TRUE;
+		else
+			return FALSE;
 	}
 	
 	function updatePoints($fbid, $qid, $questionsLeft, $answer){
 		$resAnswer = $this->checkAnswer($qid, $answer);
-		if($resAnswer !== TRUE){
+		if($resAnswer !== FALSE){
 			$upoints = $this->getUserPoints($fbid);
 			$newpoints = $resAnswer + $upoints;
 			$query = $this->mysqli->query("UPDATE user SET questionsLeft=".$questionsLeft.", points=".$newpoints." WHERE fb_id=".$fbid."");
 			$this->newUserAnswer($fbid, $qid, $resAnswer);
 			
 			if($query)
-				return FALSE;
+				return TRUE;
 			else 
-				return TRUE;//greska
+				return FALSE;//greska
 		}
-		return TRUE;//greska
+		return FALSE;//greska
 	}
 }

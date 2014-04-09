@@ -6,8 +6,8 @@ class User{
 	private $permission; //0 - ne smejt da go prajt kvizot, 1 - smejt
 	private static $max_questions = 10;
 	
-	function __construct($fbid, $name, $email, $tel){
-		$db_user_info = $this->getUserInfo($fbid);
+	function __construct(/*$fbid, $name, $email, $tel*/){
+		/*$db_user_info = $this->getUserInfo($fbid);
 		if($db_user_info != NULL){
 			$this->setUserInfo($db_user_info);
 			$this->setUserPermission();
@@ -15,10 +15,8 @@ class User{
 		else{
 			$this->addUser($fbid, $name, $email, $tel);
 			$this->permission = 1;
-		}
+		}*/
 	}
-	
-	//private functions...
 
 	//postavuvanje permisii za dali smejt ili ne da prajt kviz
 	private function setUserPermission(){
@@ -30,14 +28,14 @@ class User{
 		}
 	}
 	
-	//zema info za user od baza
-	private function getUserInfo($fbid){
+	//vrakja informacii za korisnikot ako postoi ili null ako ne postoi
+	public function getUserInfo($fbid){
 		$result = array();
 		$db = new DBManager();
 		$result = $db->getUserByFbid($fbid);
 		$db->CloseConnection();
 		
-		if($result === TRUE){//korisnikot ne e vnesen vo bazata
+		if($result === FALSE){//korisnikot ne e vnesen vo bazata
 			return NULL;
 		}
 		else
@@ -45,7 +43,7 @@ class User{
 	}
 	
 	//populnuvanje info za user
-	private function setUserInfo($db_user_info){
+	public function setUserInfo($db_user_info){
 		$this->info = array(
 				"fbid" => $db_user_info['fb_id'], 	//id od facebook
 				"name" => $db_user_info['name'], 	//fb ime
@@ -54,25 +52,33 @@ class User{
 				"questionsLeft" => $db_user_info['questionsLeft'], 	// 0 - ne go imat napraeno, 1 - go imat napraeno
 				"points" => $db_user_info['points'] // poeni od kvizot
 		);
+		$this->setUserPermission();
 	}
 	
-	//dodava user vo baza
-	private function addUser($fbid, $name, $email, $tel){
+	//dodava user vo baza i ja popolnuva klasata so podatoci
+	//vrakja TRUE ako ima greska i false ako nema
+	public function addUser($fbid, $name, $email, $tel){
 		$db = new DBManager();
 		$err = $db->addUser($fbid, $name, $email, $tel);
 		$db->CloseConnection();
 		
-		if($err){//ima greska
-			return TRUE;
+		$this->setUserInfo(array(
+				"fb_id" => $fbid,
+				"name" => $name,
+				"email" => $email,
+				"tel" => $tel,
+				"questionsLeft" => 10,
+				"points" => 0
+		));
+		
+		if($err === FALSE){//ima greska
+			return FALSE;
 		}
 		else{//nema greska
-			return FALSE;
+			return TRUE;
 		}
 	}
 	
-	//end private functions...
-	
-	//public functions...
 	
 	//provervis dali smejt da go prajt kvizot ili ne
 	public function getPermission(){
@@ -84,30 +90,32 @@ class User{
 		return $this->info;
 	}
 	
-	//nov odgovor na prasanje so id X
+	//se povikuva koga korisnikot ke odgovori na prasanje so id X
 	public function newAnswer($questionID, $answer){
-		$this->info['questionsLeft'] = $this->info['questionsLeft']-1;
-		if($this->info['questionsLeft'] == 0){
-			$this->setUserPermission();
+		if($this->permission){
+			$this->info['questionsLeft'] = $this->info['questionsLeft']-1;
+			if($this->info['questionsLeft'] == 0){
+				$this->setUserPermission();
+			}
+			$db = new DBManager();
+			//update na poeni i se namaluva brojot na preostanati prasanja
+			$err = $db->updatePoints($this->info['fbid'], $questionID, $this->info['questionsLeft'], $answer);
+			$db->CloseConnection();
+			
+			if($err === FALSE){//ima greska
+				return FALSE;
+			}
+			else{//nema greska
+				return TRUE;
+			}
 		}
-		$db = new DBManager();
-		//update na poeni i se namaluva brojot na preostanati prasanja
-		$err = $db->updatePoints($this->info['fbid'], $questionID, $this->info['questionsLeft'], $answer);
-		$db->CloseConnection();
-		
-		if($err){//ima greska
-			return TRUE;
-		}
-		else{//nema greska
+		else{
 			return FALSE;
 		}
+		
 	}
 	
-	//end public functions...
+	
 	
 }//end class User
 
-$user = new User(110, "Hristijan k", "hr@hotmail.com", "077123123");
-//print_r($user->getInfo());
-//echo $user->getPermission();
-$user->newAnswer(1, 3);
