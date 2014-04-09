@@ -38,6 +38,6 @@ class Question {
         }
         $qa_div->find(".php_answers_container", 0)->innertext = $answers_html;
 
-        return $html;
+        return $qa_div;
     }
 }
