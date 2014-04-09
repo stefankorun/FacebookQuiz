@@ -26,11 +26,7 @@
 <div class="main">
     <div class="quiz_container">
         <div class="status_container">Прашање 1/20</div>
-        <div class="qa_container">
-	           <div class="question">
-	                Шо е работава?
-	           </div>
-	           <div class="answers_container container-fluid">
+   
 	           <?php
 	           
 					require_once("fb-sdk/src/facebook.php");
@@ -103,11 +99,9 @@
 					
 					           		
 	           ?>
-	           </div>
+	           
         </div>
-        <div class="submit_button">
-            Одговори
-        </div>
+       
     </div>
 </div>
 <footer>

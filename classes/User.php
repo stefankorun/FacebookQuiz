@@ -75,7 +75,7 @@ class User{
 					"questionsLeft" => 10,
 					"points" => 0
 			));
-			echo "nema";
+			
 			return TRUE;
 		}
 	}
@@ -134,6 +134,12 @@ class User{
 	public function validateAnswer($fbid,$questionId,$answer){
 		$db=new DBManager();
 		$db->validateAnswer($questionId,$answer,$fbid);
+	}
+	
+	public function renderUserInfoForm($html_location){
+		 $html = new simple_html_dom();
+		 $html->load_file($html_location);
+		 print $html->outertext;
 	}
 	
 }//end class User
