@@ -39,6 +39,7 @@ if($user_id) {
         }
         print_r($user->getInfo());
         
+        $user->newAnswer(1, 2);
         
         /*$params = array( 'next' => 'http://localhost/FacebookQuiz/fb.php' );
         $logout_url = $facebook->getLogoutUrl($params);
