@@ -31,12 +31,18 @@ class DBManager
 	
 	function getUserByFbid($fbid){
 		$query = $this->mysqli->query("SELECT * FROM user WHERE fb_id=".$fbid."");
-		$res = $query->fetch_assoc();
 		
-		if(sizeof($res) > 0)
-			return $res;
-		else
-			return FALSE;//greska
+		if($query){
+			$res = $query->fetch_assoc();
+			if(sizeof($res) > 0)
+				return $res;
+			else
+				return FALSE;//greska
+		}
+		else{
+			echo "Error: " . $this->mysqli->error;
+			return FALSE;
+		}
 	}
 	
 	function addUser($fbid, $name, $email, $tel){
@@ -44,8 +50,10 @@ class DBManager
 		
 		if($query)
 			return TRUE;
-		else 
+		else{
+			echo "Error: " . $this->mysqli->error;
 			return FALSE;
+		}
 	}
 	
 	function updateQuestionsLeft($fbid, $ql){
@@ -53,36 +61,50 @@ class DBManager
 		
 		if($query)
 			return TRUE;
-		else 
+		else{
+			echo "Error: " . $this->mysqli->error;
 			return FALSE;//greska
+		}
 	}
 	
 	function checkAnswer($qid, $answer){
 		$queryQuestionPoints = $this->mysqli->query("SELECT answer FROM prasanja WHERE id=".$qid."");
-		$res = $queryQuestionPoints->fetch_assoc();
-		
-		if(sizeof($res)){
-			if($res['answer'] == $answer){//ako e tocen odgovorot 10 poeni
-				return 10;
+		if($queryQuestionPoints){
+			$res = $queryQuestionPoints->fetch_assoc();
+			if(sizeof($res)){
+				if($res['answer'] == $answer){//ako e tocen odgovorot 10 poeni
+					return 10;
+				}
+				else{// ako ne 0
+					return 0;
+				}
 			}
-			else{// ako ne 0
-				return 0;
+			else{
+				return FALSE;//greska...
 			}
 		}
 		else{
-			return FALSE;//greska...
+			echo "Error: " . $this->mysqli->error;
+			return FALSE;
 		}
 	}
 	
 	function getUserPoints($fbid){
 		$queryQuestionPoints = $this->mysqli->query("SELECT * FROM user WHERE fb_id=".$fbid."");
-		$res = $queryQuestionPoints->fetch_assoc();
-		$points = $res['points'];
 		
-		if(sizeof($res))
-			return $points;
-		else
-			return FALSE;//greska
+		if($queryQuestionPoints){
+			$res = $queryQuestionPoints->fetch_assoc();
+			$points = $res['points'];
+			
+			if(sizeof($res))
+				return $points;
+			else
+				return FALSE;//greska
+		}
+		else{
+			echo "Error: " . $this->mysqli->error;
+			return FALSE;
+		}
 	}
 	
 	function newUserAnswer($fbid, $qid, $points){
@@ -90,8 +112,10 @@ class DBManager
 		
 		if($query)
 			return TRUE;
-		else
+		else{
+			echo "Error: " . $this->mysqli->error;
 			return FALSE;
+		}
 	}
 	
 	function updatePoints($fbid, $qid, $questionsLeft, $answer){
@@ -100,12 +124,14 @@ class DBManager
 			$upoints = $this->getUserPoints($fbid);
 			$newpoints = $resAnswer + $upoints;
 			$query = $this->mysqli->query("UPDATE user SET questionsLeft=".$questionsLeft.", points=".$newpoints." WHERE fb_id=".$fbid."");
-			$this->newUserAnswer($fbid, $qid, $resAnswer);
-			
-			if($query)
+			if($query){
+				$this->newUserAnswer($fbid, $qid, $resAnswer);
 				return TRUE;
-			else 
-				return FALSE;//greska
+			}
+			else{
+				echo "Error: " . $this->mysqli->error;
+				return FALSE;
+			}
 		}
 		return FALSE;//greska
 	}

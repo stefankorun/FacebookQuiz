@@ -62,19 +62,19 @@ class User{
 		$err = $db->addUser($fbid, $name, $email, $tel);
 		$db->CloseConnection();
 		
-		$this->setUserInfo(array(
-				"fb_id" => $fbid,
-				"name" => $name,
-				"email" => $email,
-				"tel" => $tel,
-				"questionsLeft" => 10,
-				"points" => 0
-		));
-		
 		if($err === FALSE){//ima greska
 			return FALSE;
 		}
 		else{//nema greska
+			$this->setUserInfo(array(
+					"fb_id" => $fbid,
+					"name" => $name,
+					"email" => $email,
+					"tel" => $tel,
+					"questionsLeft" => 10,
+					"points" => 0
+			));
+			echo "nema";
 			return TRUE;
 		}
 	}
